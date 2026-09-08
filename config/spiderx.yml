@@ -1,0 +1,72 @@
+# SpiderX shared configuration — single source of truth for spx-ui and spx-service.
+#
+# Load order (last wins):
+#   1. this bundled file
+#   2. /etc/spiderx/spiderx.yml        (appliance overlay, written by the installer)
+#   3. environment variables            (ES_*, MYSQL_*, SPIDERX_*, PORT)
+#
+# Port layout mirrors vehere-ui / uiServices exactly:
+#   spx-ui       :4000   (same as vehere-ui)
+#   spx-service  :8082   (same as uiservice)
+
+elasticsearch_config: {
+  hosts: 'https://localhost:9200/',
+  username: 'admin',
+  password: 'CHANGEME',
+  requestTimeout: 120000,
+  rejectUnauthorized: false,
+}
+
+mySQL_config: {
+  host: 'localhost',
+  user: 'vehere',
+  password: 'CHANGEME',
+  database: 'ui_db',
+  port: 3306,
+  connectionLimit: 10,
+}
+
+# spx-ui — Next.js frontend, HTTPS via server.js
+server: {
+  port: 4000,
+  bind: '0.0.0.0',
+  preferHttps: true,
+}
+
+# spx-service — Express API, HTTPS via providers/Server.ts
+service: {
+  port: 8082,
+  bind: '0.0.0.0',
+  preferHttps: true,
+  apiPrefix: '/api/v1',
+  url: 'https://127.0.0.1:8082',
+}
+
+auth: {
+  APP_TOTP_ISSUER: 'SpiderX',
+  session_jwt_secret: 'change-me-in-production',
+  session_cookie_expiresIn_sec: 43200,
+  session_cookie_key_name: 'spiderx_sid',
+}
+
+filePath: {
+  externalConfigFolderPath: '/etc/spiderx',
+  externalConfigFileName: 'spiderx.yml',
+  setupInfoFilePath: '/usr/local/etc/setup_info.json',
+  server_ssl_certificate: '/usr/local/share/ca-certificates/VEHERE.crt',
+  server_ssl_key: '/usr/local/share/ca-certificates/VEHERE.key',
+  license_file_path: '/usr/local/etc/license/license.json',
+  build_global_meta_data_file_path: '/usr/local/etc/PW/globalmetadata.json',
+}
+
+dbIndex: {
+  alert_index_pattern: 'logvehere-alerts-*',
+  monitoring_index_pattern: 'logvehere-monitor-*',
+  link_stats_index: 'link-stats-*',
+  soi_stats_index: 'soi-stats-*',
+  capture_input_identification_index: 'udf_iface',
+  capture_filter_index: 'capture_filter',
+  frame_dumps_index: 'frame_dumps-*',
+  target_managements_index: 'target_managements',
+  auditTrail_index: 'audittrail',
+}

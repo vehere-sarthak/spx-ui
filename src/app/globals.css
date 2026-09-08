@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light — cool graphite canvas, black chrome, crimson accent */
+    --background: 220 16% 96%;
+    --foreground: 240 10% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
+    --primary: 354 82% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 240 10% 12%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 8% 40%;
+    --accent: 354 82% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 354 82% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 86%;
+    --input: 220 13% 86%;
+    --ring: 354 82% 50%;
+    --radius: 0.65rem;
+    --rail: 0 0% 0%;
+    --rail-fg: 0 0% 92%;
+    --surface: 0 0% 100%;
+  }
+
+  .dark {
+    /* Dark — near-black + crimson NDR command center */
+    --background: 240 8% 3.5%;
+    --foreground: 210 20% 96%;
+    --card: 240 6% 7%;
+    --card-foreground: 210 20% 96%;
+    --popover: 240 8% 6%;
+    --popover-foreground: 210 20% 96%;
+    --primary: 354 86% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 12%;
+    --secondary-foreground: 210 20% 96%;
+    --muted: 240 5% 12%;
+    --muted-foreground: 215 10% 58%;
+    --accent: 354 86% 54%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 354 86% 54%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 5% 16%;
+    --input: 240 5% 14%;
+    --ring: 354 86% 54%;
+    --rail: 0 0% 0%;
+    --rail-fg: 0 0% 90%;
+    --surface: 240 6% 7%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    height: 100%;
+    overflow: hidden;
+    background-image: none;
+  }
+}
+
+@layer components {
+  .ndr-panel {
+    @apply rounded-lg border border-border/80 bg-card/80 shadow-panel backdrop-blur-xl;
+  }
+
+  .ndr-inset {
+    @apply rounded-md border border-border/60 bg-muted/40;
+  }
+
+  .sev-dot {
+    @apply inline-block h-2 w-2 rounded-full;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.45) transparent;
+  }
+  .scroll-thin::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.45);
+    border-radius: 999px;
+  }
+}
