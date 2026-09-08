@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4000",
+    "dev": "NODE_ENV=development NEXT_IGNORE_INCORRECT_LOCKFILE=1 node server.js",
     "dev:live": "bash scripts/dev-live.sh",
     "sync:es": "python3 scripts/sync-es-cache.py",
-    "build": "next build && node buildInfo.js",
-    "start": "next start -p 4000",
-    "start:prod": "NODE_ENV=production node server.js",
+    "build": "NEXT_IGNORE_INCORRECT_LOCKFILE=1 next build && node buildInfo.js",
+    "start": "NODE_ENV=production node server.js",
     "setup:db": "bash setup_db.sh",
     "setup:es": "bash es_db_setup.sh",
-    "lint": "NEXT_IGNORE_INCORRECT_LOCKFILE=1 next lint"
+    "lint": "NEXT_IGNORE_INCORRECT_LOCKFILE=1 next lint",
+    "dev:http": "NEXT_IGNORE_INCORRECT_LOCKFILE=1 next dev -p 4000"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
