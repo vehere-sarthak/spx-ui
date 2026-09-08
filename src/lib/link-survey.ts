@@ -1,3 +1,4 @@
+import { apiFetch } from "./api-client";
 export type PbData = {
   pbIP: string;
   pbPort: string;
@@ -85,7 +86,7 @@ export function parseLinkRows(text: string): LinkSurveyRow[] {
 }
 
 export async function postBulkImportPbLinks(pbData: PbData, linkRows: LinkSurveyRow[]) {
-  const res = await fetch("/api/v1/link-monitoring/bulk-import-pb-links", {
+  const res = await apiFetch("/link-monitoring/bulk-import-pb-links", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

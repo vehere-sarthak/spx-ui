@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "./api-client";
 import * as React from "react";
 
 export type SpiderUser = {
@@ -28,7 +29,7 @@ export function clearSession() {
   localStorage.removeItem("spiderx_session");
   localStorage.removeItem("spiderx_user");
   if (typeof window !== "undefined") {
-    void fetch("/api/v1/auth/session", {
+    void apiFetch("/auth/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
