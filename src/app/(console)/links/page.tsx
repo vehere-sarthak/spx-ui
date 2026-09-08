@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { PageFrame } from "@/components/ndr/page-frame";
 import { DateRangeBar, useDateRange } from "@/components/ndr/date-range-bar";
@@ -112,7 +113,7 @@ export default function LinksPage() {
       if (st !== "all") params.set("state", st);
       const adv = rulesToQuery(rules);
       if (adv) params.set("advanced", adv);
-      const res = await fetch(`/api/v1/link-monitoring?${params}`, { cache: "no-store" });
+      const res = await apiFetch(`/link-monitoring?${params}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed");
       setItems(json.items || []);
@@ -150,7 +151,7 @@ export default function LinksPage() {
           startTime: range.startTime,
           endTime: range.endTime,
         });
-        const res = await fetch(`/api/v1/link-monitoring/detail?${params}`, { cache: "no-store" });
+        const res = await apiFetch(`/link-monitoring/detail?${params}`, { cache: "no-store" });
         const json = await res.json();
         if (res.ok) setDetail(json);
       } catch {
@@ -197,7 +198,7 @@ export default function LinksPage() {
     const id = selected.id || selected.name;
     setRevealBusy(field);
     try {
-      const res = await fetch(`/api/v1/pii/reveal?id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}`, {
+      const res = await apiFetch(`/pii/reveal?id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}`, {
         cache: "no-store",
       });
       const json = await res.json();

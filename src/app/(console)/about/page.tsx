@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { PageFrame } from "@/components/ndr/page-frame";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +31,7 @@ export default function AboutPage() {
   React.useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/v1/about", { cache: "no-store" });
+        const res = await apiFetch("/about", { cache: "no-store" });
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "Failed");
         setData(json);

@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { PageFrame } from "@/components/ndr/page-frame";
 import { DateRangeBar, useDateRange } from "@/components/ndr/date-range-bar";
@@ -240,7 +241,7 @@ export default function TargetsPage() {
       });
       const adv = rulesToQuery(rules);
       if (adv) params.set("advanced", adv);
-      const res = await fetch(`/api/v1/target-managements?${params}`, { cache: "no-store" });
+      const res = await apiFetch(`/target-managements?${params}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed");
       setItems(json.items || json.details || []);
@@ -271,7 +272,7 @@ export default function TargetsPage() {
   }, [load]);
 
   React.useEffect(() => {
-    fetch("/api/v1/users?pageSize=200", { cache: "no-store" })
+    apiFetch("/users?pageSize=200", { cache: "no-store" })
       .then((r) => r.json())
       .then((j) => setUsers((j.items || []).map((u: any) => u.user_id).filter(Boolean)))
       .catch(() => setUsers([]));
@@ -292,9 +293,9 @@ export default function TargetsPage() {
             pageSize: "50",
           });
           const [actRes, soiRes] = await Promise.all([
-            fetch(`/api/v1/target-managements/activity?${params}`, { cache: "no-store" }),
-            fetch(
-              `/api/v1/target-managements/soi-stats?targetId=${encodeURIComponent(selected.id)}&startTime=${encodeURIComponent(range.startTime)}&endTime=${encodeURIComponent(range.endTime)}`,
+            apiFetch(`/target-managements/activity?${params}`, { cache: "no-store" }),
+            apiFetch(
+              `/target-managements/soi-stats?targetId=${encodeURIComponent(selected.id)}&startTime=${encodeURIComponent(range.startTime)}&endTime=${encodeURIComponent(range.endTime)}`,
               { cache: "no-store" }
             ),
           ]);
@@ -313,7 +314,7 @@ export default function TargetsPage() {
             endTime: range.endTime,
             pageSize: "50",
           });
-          const res = await fetch(`/api/v1/target-managements/frames?${params}`, { cache: "no-store" });
+          const res = await apiFetch(`/target-managements/frames?${params}`, { cache: "no-store" });
           const json = await res.json();
           if (!cancelled) {
             setFrames(json.items || json.rows || []);
@@ -336,7 +337,7 @@ export default function TargetsPage() {
   async function toggle(t: Target, enabled: boolean) {
     try {
       setToggling(t.id);
-      const res = await fetch("/api/v1/target-managements/toggle-status", {
+      const res = await apiFetch("/target-managements/toggle-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ _id: t.id, enabled }),
@@ -377,7 +378,7 @@ export default function TargetsPage() {
     const user = readSessionUser();
     const by = user?.user_id || "spiderx";
     const isEdit = dialog === "edit" && selected;
-    const res = await fetch("/api/v1/target-managements", {
+    const res = await apiFetch("/target-managements", {
       method: isEdit ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -399,7 +400,7 @@ export default function TargetsPage() {
     const ids = checked.size ? Array.from(checked) : selected ? [selected.id] : [];
     if (!ids.length) return;
     if (!confirm(`Delete ${ids.length} target(s)?`)) return;
-    const res = await fetch("/api/v1/target-managements", {
+    const res = await apiFetch("/target-managements", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids }),
@@ -420,7 +421,7 @@ export default function TargetsPage() {
       pageSize: "5000",
     });
     if (checked.size) params.set("ids", Array.from(checked).join(","));
-    const res = await fetch(`/api/v1/target-managements/export?${params}`, { cache: "no-store" });
+    const res = await apiFetch(`/target-managements/export?${params}`, { cache: "no-store" });
     const json = await res.json();
     if (!res.ok) {
       setError(json.error || "Export failed");
@@ -467,7 +468,7 @@ export default function TargetsPage() {
         };
       })
       .filter((r) => r.alias);
-    const res = await fetch("/api/v1/target-managements/bulk-import-target", {
+    const res = await apiFetch("/target-managements/bulk-import-target", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data: rows, importName, created_by: readSessionUser()?.user_id || "spiderx" }),
@@ -487,7 +488,7 @@ export default function TargetsPage() {
 
   async function share() {
     if (!selected) return;
-    const res = await fetch("/api/v1/target-managements/share-target", {
+    const res = await apiFetch("/target-managements/share-target", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ targetId: selected.id, userIds: shareIds.length ? shareIds : ["All"] }),
@@ -502,7 +503,7 @@ export default function TargetsPage() {
   }
 
   async function decodeFrame(hexdump: string) {
-    const res = await fetch("/api/v1/target-managements/frames/decode", {
+    const res = await apiFetch("/target-managements/frames/decode", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ hexdump }),

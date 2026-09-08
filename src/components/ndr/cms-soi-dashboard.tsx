@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { ChartPanel, MiniBars, SparkArea, RingMix } from "@/components/ndr/charts";
 import { DateRangeBar, useDateRange } from "@/components/ndr/date-range-bar";
@@ -79,7 +80,7 @@ export function CmsSoiDashboard() {
       if (q.trim()) params.set("query", q.trim());
       const adv = rulesToQuery(rules);
       if (adv) params.set("advanced", adv);
-      const res = await fetch(`/api/v1/dashboard/cms/soi/overview?${params}`, { cache: "no-store" });
+      const res = await apiFetch(`/dashboard/cms/soi/overview?${params}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed");
       setData(json);

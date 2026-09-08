@@ -25,7 +25,13 @@ export type SpiderXConfig = {
     session_cookie_key_name?: string;
     platform_mfa?: unknown;
   };
-  uiservice?: { url?: string };
+  service?: {
+    port?: number;
+    bind?: string;
+    preferHttps?: boolean;
+    apiPrefix?: string;
+    url?: string;
+  };
   filePath: {
     externalConfigFolderPath?: string;
     externalConfigFileName?: string;
@@ -97,7 +103,7 @@ function applyEnvOverrides(cfg: SpiderXConfig): SpiderXConfig {
   c.auth = c.auth || {};
   c.server = c.server || { port: 3010 };
   c.filePath = c.filePath || {};
-  c.uiservice = c.uiservice || {};
+  c.service = c.service || {};
 
   if (process.env.ES_HOST) c.elasticsearch_config.hosts = process.env.ES_HOST;
   if (process.env.ES_USERNAME) c.elasticsearch_config.username = process.env.ES_USERNAME;
@@ -113,7 +119,7 @@ function applyEnvOverrides(cfg: SpiderXConfig): SpiderXConfig {
   if (process.env.SPIDERX_SESSION_SECRET) c.auth.session_jwt_secret = process.env.SPIDERX_SESSION_SECRET;
   if (process.env.APP_TOTP_ISSUER) c.auth.APP_TOTP_ISSUER = process.env.APP_TOTP_ISSUER;
   if (process.env.PORT) c.server.port = Number(process.env.PORT);
-  if (process.env.UISERVICE_URL) c.uiservice.url = process.env.UISERVICE_URL;
+  if (process.env.SPX_SERVICE_URL) c.service!.url = process.env.SPX_SERVICE_URL;
   if (process.env.SPIDERX_SSL_CERT) c.filePath.server_ssl_certificate = process.env.SPIDERX_SSL_CERT;
   if (process.env.SPIDERX_SSL_KEY) c.filePath.server_ssl_key = process.env.SPIDERX_SSL_KEY;
   return c;

@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -71,7 +72,7 @@ export default function AuditPage() {
       });
       const cat = category.filter((c) => c !== "all");
       if (cat.length) params.set("category", cat.join(","));
-      const res = await fetch(`/api/v1/audittrail?${params}`, { cache: "no-store" });
+      const res = await apiFetch(`/audittrail?${params}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed");
       const nextItems: AuditRow[] = json.items || [];
@@ -131,7 +132,7 @@ export default function AuditPage() {
       });
       const cat = category.filter((c) => c !== "all");
       if (cat.length) params.set("category", cat.join(","));
-      const res = await fetch(`/api/v1/audittrail?${params}`, { cache: "no-store" });
+      const res = await apiFetch(`/audittrail?${params}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Export failed");
       const rows: AuditRow[] = json.items?.length ? json.items : items;

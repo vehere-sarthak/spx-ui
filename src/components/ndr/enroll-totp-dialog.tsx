@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -35,7 +36,7 @@ export function EnrollTotpDialog({ open, onOpenChange, userId, onEnrolled }: Pro
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/v1/auth/session", {
+        const res = await apiFetch("/auth/session", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -58,7 +59,7 @@ export function EnrollTotpDialog({ open, onOpenChange, userId, onEnrolled }: Pro
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/v1/auth/session", {
+      const res = await apiFetch("/auth/session", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

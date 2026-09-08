@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
+
 import * as React from "react";
 import {  } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -81,7 +83,7 @@ export function SpxDetailPanel({
   onStatusChange?: (id: number, agent: string, probe: string) => void;
 }) {
   const id = appliance.id;
-  const base = `/api/v1/spx-management/${id}`;
+  const base = `/spx-management/${id}`;
   const idx = appliances.findIndex((a) => a.id === id);
 
   const [tab, setTab] = React.useState("probe-0");
@@ -109,10 +111,10 @@ export function SpxDetailPanel({
     setErr("");
     try {
       const [stRes, ifRes, agRes, prRes] = await Promise.all([
-        fetch(`${base}/services/status`, { cache: "no-store" }),
-        fetch(`${base}/interfaces`, { cache: "no-store" }),
-        fetch(`${base}/config/agent`, { cache: "no-store" }),
-        fetch(`${base}/config/probes`, { cache: "no-store" }),
+        apiFetch(`${base}/services/status`, { cache: "no-store" }),
+        apiFetch(`${base}/interfaces`, { cache: "no-store" }),
+        apiFetch(`${base}/config/agent`, { cache: "no-store" }),
+        apiFetch(`${base}/config/probes`, { cache: "no-store" }),
       ]);
       const st = await stRes.json();
       const ifaces = await ifRes.json();
@@ -288,7 +290,7 @@ export function SpxDetailPanel({
     let cancelled = false;
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${base}/services/probes/${probeId}/iface-stats`, { cache: "no-store" });
+        const res = await apiFetch(`${base}/services/probes/${probeId}/iface-stats`, { cache: "no-store" });
         const data = await res.json();
         if (!cancelled && data && (data.text || (data.interfaces || []).length || data.stdout)) {
           setLiveStats(data);
@@ -310,14 +312,14 @@ export function SpxDetailPanel({
     setErr("");
     setMsg("");
     try {
-      const res = await fetch(`${base}/${path}`, {
+      const res = await apiFetch(`${base}/${path}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || json.error) throw new Error(json.error || json.detail || json.message || `${label} failed`);
-      const stRes = await fetch(`${base}/services/status`, { cache: "no-store" });
+      const stRes = await apiFetch(`${base}/services/status`, { cache: "no-store" });
       const st = await stRes.json();
       setStatus(st);
       setMsg(label);
@@ -360,7 +362,7 @@ export function SpxDetailPanel({
       const payload = items.length
         ? { interfaces: items, probe_ips: {} }
         : { interfaces: [], probe_ips: {}, clear: true };
-      const res = await fetch(`${base}/config/probes/apply`, {
+      const res = await apiFetch(`${base}/config/probes/apply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -387,7 +389,7 @@ export function SpxDetailPanel({
     setMsg("");
     setTestedOk(false);
     try {
-      const res = await fetch(`${base}/config/agent/test-connection`, {
+      const res = await apiFetch(`${base}/config/agent/test-connection`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(draft.elasticsearch),
@@ -425,7 +427,7 @@ export function SpxDetailPanel({
           ...draft.elasticsearch,
         },
       };
-      const res = await fetch(`${base}/config/agent`, {
+      const res = await apiFetch(`${base}/config/agent`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ config }),

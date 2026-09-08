@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { PageFrame } from "@/components/ndr/page-frame";
 import { PaginationBar } from "@/components/ndr/pagination-bar";
@@ -51,8 +52,8 @@ export default function UsersPage() {
     try {
       const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize), query: q });
       const [u, r] = await Promise.all([
-        fetch(`/api/v1/users?${params}`, { cache: "no-store" }).then((x) => x.json()),
-        fetch(`/api/v1/roles?pageSize=100`, { cache: "no-store" }).then((x) => x.json()),
+        apiFetch(`/users?${params}`, { cache: "no-store" }).then((x) => x.json()),
+        apiFetch(`/roles?pageSize=100`, { cache: "no-store" }).then((x) => x.json()),
       ]);
       if (u.error) throw new Error(u.error);
       setItems(u.items || []);
@@ -99,7 +100,7 @@ export default function UsersPage() {
           setError("user_id, role, and password are required");
           return;
         }
-        const res = await fetch("/api/v1/users", {
+        const res = await apiFetch("/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -125,7 +126,7 @@ export default function UsersPage() {
           setError("Missing user id");
           return;
         }
-        const res = await fetch("/api/v1/users", {
+        const res = await apiFetch("/users", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -156,7 +157,7 @@ export default function UsersPage() {
   }
 
   async function remove(id: number) {
-    const res = await fetch("/api/v1/users", {
+    const res = await apiFetch("/users", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: [id] }),
@@ -339,7 +340,7 @@ export default function UsersPage() {
                       if (!form.id) return;
                       setSaving(true);
                       try {
-                        const res = await fetch("/api/v1/users", {
+                        const res = await apiFetch("/users", {
                           method: "PUT",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({

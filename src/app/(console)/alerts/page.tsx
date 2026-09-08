@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch, apiUrl } from "@/lib/api-client";
 import * as React from "react";
 import { Download, Flag, Search, Tag } from "lucide-react";
 import type { Detection } from "@/lib/types";
@@ -92,7 +93,7 @@ export default function AlertsPage() {
   const load = React.useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/v1/alerts?${filterParams()}`, { cache: "no-store" });
+      const res = await apiFetch(`/alerts?${filterParams()}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed");
       const items: Detection[] = json.items || [];
@@ -136,7 +137,7 @@ export default function AlertsPage() {
           startTime: range.startTime,
           endTime: range.endTime,
         });
-        const res = await fetch(`/api/v1/alerts/summary?${params}`, { cache: "no-store" });
+        const res = await apiFetch(`/alerts/summary?${params}`, { cache: "no-store" });
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "Summary failed");
         if (!cancelled) {
@@ -165,7 +166,7 @@ export default function AlertsPage() {
         setReconLoading(true);
         const params = new URLSearchParams({ id: selected.id });
         if (selected.index) params.set("index", selected.index);
-        const res = await fetch(`/api/v1/alerts/reconstruction?${params}`, { cache: "no-store" });
+        const res = await apiFetch(`/alerts/reconstruction?${params}`, { cache: "no-store" });
         const json = await res.json();
         if (!cancelled) {
           setRecon(res.ok ? json : { error: json.error || "Reconstruction failed" });
@@ -214,7 +215,7 @@ export default function AlertsPage() {
     const user = readSessionUser()?.user_id || "spiderx";
     try {
       setActionBusy(true);
-      const res = await fetch("/api/v1/alerts/actions", {
+      const res = await apiFetch("/alerts/actions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, ids, user, tagName }),
@@ -230,7 +231,7 @@ export default function AlertsPage() {
     }
   }
 
-  function exportCsv() {
+  async function exportCsv() {
     const ids = selectedIds();
     const params = new URLSearchParams({
       startTime: range.startTime,
@@ -239,7 +240,7 @@ export default function AlertsPage() {
       pageSize: "5000",
     });
     if (ids.length) params.set("ids", ids.map((i) => i._id).join(","));
-    window.open(`/api/v1/alerts/actions?${params}`, "_blank");
+    window.open(await apiUrl(`/alerts/actions?${params}`), "_blank");
   }
 
   function toggleCheck(d: Detection, e?: React.MouseEvent) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { PageFrame } from "@/components/ndr/page-frame";
 import { PaginationBar } from "@/components/ndr/pagination-bar";
@@ -43,7 +44,7 @@ export default function EdgePage() {
 
   const loadRegistry = React.useCallback(async () => {
     const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize), query: q });
-    const res = await fetch(`/api/v1/spx-management?${params}`, { cache: "no-store" });
+    const res = await apiFetch(`/spx-management?${params}`, { cache: "no-store" });
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || "Registry failed");
     let items: Appliance[] = json.items || json.result || [];
@@ -51,7 +52,7 @@ export default function EdgePage() {
     items = await Promise.all(
       items.map(async (a) => {
         try {
-          const st = await fetch(`/api/v1/spx-management/${a.id}/services/status`, { cache: "no-store" }).then((r) =>
+          const st = await apiFetch(`/spx-management/${a.id}/services/status`, { cache: "no-store" }).then((r) =>
             r.json()
           );
           const agent =
@@ -101,7 +102,7 @@ export default function EdgePage() {
   async function register() {
     setRegistering(true);
     try {
-      const res = await fetch("/api/v1/spx-management", {
+      const res = await apiFetch("/spx-management", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -125,7 +126,7 @@ export default function EdgePage() {
 
   async function remove(a: Appliance) {
     if (!confirm(`Remove appliance "${a.name}" (${a.ip_address})?`)) return;
-    const res = await fetch("/api/v1/spx-management", {
+    const res = await apiFetch("/spx-management", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: [a.id] }),

@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { PageFrame } from "@/components/ndr/page-frame";
 import { DateRangeBar, useDateRange } from "@/components/ndr/date-range-bar";
@@ -27,8 +28,8 @@ export default function HealthPage() {
       if (host !== "all") bwParams.set("probe", host);
 
       const [dashRes, bwRes] = await Promise.all([
-        fetch(`/api/v1/health/dashboard?${params}`, { cache: "no-store" }),
-        fetch(`/api/v1/health/bandwidth?${bwParams}`, { cache: "no-store" }),
+        apiFetch(`/health/dashboard?${params}`, { cache: "no-store" }),
+        apiFetch(`/health/bandwidth?${bwParams}`, { cache: "no-store" }),
       ]);
       const json = await dashRes.json();
       if (!dashRes.ok) throw new Error(json.error || "Failed");

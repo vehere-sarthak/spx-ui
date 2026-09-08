@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -73,7 +74,7 @@ export function CommandPalette() {
     const t = setTimeout(async () => {
       try {
         const params = new URLSearchParams({ pageSize: "5", startTime: "now-7d", query: q.trim() });
-        const res = await fetch(`/api/v1/alerts?${params}`, { cache: "no-store" });
+        const res = await apiFetch(`/alerts?${params}`, { cache: "no-store" });
         const json = await res.json();
         if (res.ok) setDetectionHits(json.items || []);
       } catch {

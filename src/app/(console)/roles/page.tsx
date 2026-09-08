@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { PageFrame } from "@/components/ndr/page-frame";
 import { PaginationBar } from "@/components/ndr/pagination-bar";
@@ -107,7 +108,7 @@ export default function RolesPage() {
   const load = React.useCallback(async () => {
     try {
       const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize), query: q });
-      const res = await fetch(`/api/v1/roles?${params}`, { cache: "no-store" });
+      const res = await apiFetch(`/roles?${params}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed");
       setItems(json.items || []);
@@ -167,7 +168,7 @@ export default function RolesPage() {
     setSaving(true);
     try {
       if (mode === "create") {
-        const res = await fetch("/api/v1/roles", {
+        const res = await apiFetch("/roles", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: { ...payload, created_by: actor } }),
@@ -178,7 +179,7 @@ export default function RolesPage() {
           return;
         }
       } else {
-        const res = await fetch("/api/v1/roles", {
+        const res = await apiFetch("/roles", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -201,7 +202,7 @@ export default function RolesPage() {
   }
 
   async function remove(id: number) {
-    const res = await fetch("/api/v1/roles", {
+    const res = await apiFetch("/roles", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: [id] }),

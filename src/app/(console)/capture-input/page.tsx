@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { PageFrame } from "@/components/ndr/page-frame";
 import { PaginationBar } from "@/components/ndr/pagination-bar";
@@ -105,7 +106,7 @@ export default function CaptureInputPage() {
     try {
       setLoading(true);
       const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize), query: q });
-      const res = await fetch(`/api/v1/capture-input-identification?${params}`, { cache: "no-store" });
+      const res = await apiFetch(`/capture-input-identification?${params}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed");
       setItems(json.items || []);
@@ -162,7 +163,7 @@ export default function CaptureInputPage() {
     };
     setSaving(true);
     try {
-      const res = await fetch("/api/v1/capture-input-identification", {
+      const res = await apiFetch("/capture-input-identification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -186,7 +187,7 @@ export default function CaptureInputPage() {
   async function remove(ids: string[]) {
     if (!ids.length) return;
     if (!confirm(`Delete ${ids.length} record(s)?`)) return;
-    const res = await fetch("/api/v1/capture-input-identification", {
+    const res = await apiFetch("/capture-input-identification", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids }),

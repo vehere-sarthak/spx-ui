@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Shield } from "lucide-react";
@@ -48,7 +49,7 @@ export default function LoginPage() {
   }, [step]);
 
   async function sessionPost(body: Record<string, unknown>) {
-    const res = await fetch("/api/v1/auth/session", {
+    const res = await apiFetch("/auth/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

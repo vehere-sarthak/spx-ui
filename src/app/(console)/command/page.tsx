@@ -1,5 +1,6 @@
 "use client";
 
+import { apiFetch } from "@/lib/api-client";
 import * as React from "react";
 import { CalendarX2, Radar, ShieldAlert, UserRoundSearch } from "lucide-react";
 import { ThreatOrbit } from "@/components/ndr/threat-orbit";
@@ -88,7 +89,7 @@ export default function CommandPage() {
       setLoading(true);
       const params = new URLSearchParams({ startTime: range.startTime, endTime: range.endTime });
       if (priority) params.set("priority", priority);
-      const res = await fetch(`/api/v1/ndr/command?${params}`, { cache: "no-store" });
+      const res = await apiFetch(`/ndr/command?${params}`, { cache: "no-store" });
       const json = (await res.json()) as CommandPayload;
       if (!res.ok) throw new Error(json.error || "Failed to load");
       setData(json);
