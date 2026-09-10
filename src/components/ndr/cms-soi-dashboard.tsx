@@ -238,15 +238,15 @@ export function CmsSoiDashboard() {
         )}
 
         <div className="grid shrink-0 gap-2 sm:grid-cols-2 xl:grid-cols-4">
-          <Kpi label="Total SOI" value={kpi?.totalSoi} accent="from-sky-500/20 to-transparent" />
-          <Kpi label="Total hits" value={kpi?.totalHits} accent="from-emerald-500/20 to-transparent" />
+          <Kpi label="Total SOI" value={kpi?.totalSoi} rule="bg-sky-500" />
+          <Kpi label="Total hits" value={kpi?.totalHits} rule="bg-emerald-500" />
           <Kpi
             label="High alerts"
             value={kpi?.highAlerts}
             hint={`Critical ${kpi?.criticalAlerts ?? 0}`}
-            accent="from-orange-500/20 to-transparent"
+            rule="bg-orange-500"
           />
-          <Kpi label="Active SpiderX" value={kpi?.activeSpiderX} accent="from-violet-500/15 to-transparent" />
+          <Kpi label="Active SpiderX" value={kpi?.activeSpiderX} rule="bg-violet-500" />
         </div>
 
         <div className="min-h-0 flex-1 space-y-3 overflow-auto scroll-thin pb-2">
@@ -355,23 +355,22 @@ function Kpi({
   label,
   value,
   hint,
-  accent,
+  rule,
 }: {
   label: string;
   value?: number;
   hint?: string;
-  accent: string;
+  /** Colour is carried by a short rule above the figure, not a wash behind it. */
+  rule: string;
 }) {
   return (
-    <div className={cn("relative overflow-hidden rounded-lg border border-border/70 bg-card px-3.5 py-3")}>
-      <div className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br", accent)} />
-      <div className="relative">
-        <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</div>
-        <div className="mt-1 text-2xl font-semibold tracking-tight tabular-nums">
-          {value != null ? Number(value).toLocaleString() : "—"}
-        </div>
-        {hint && <div className="mt-0.5 text-[10px] text-muted-foreground">{hint}</div>}
+    <div className="rounded-md border border-border bg-card px-3.5 py-3">
+      <div className={cn("mb-2 h-[2px] w-6 rounded-full", rule)} />
+      <div className="eyebrow">{label}</div>
+      <div className="display-figure mt-1 text-[26px] leading-none">
+        {value != null ? Number(value).toLocaleString() : "—"}
       </div>
+      {hint && <div className="mt-1 text-[10px] text-muted-foreground">{hint}</div>}
     </div>
   );
 }

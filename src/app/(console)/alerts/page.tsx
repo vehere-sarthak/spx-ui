@@ -271,7 +271,7 @@ export default function AlertsPage() {
   return (
     <PageFrame
       title="Detections"
-      subtitle={`Live logvehere-alerts-* · ${total.toLocaleString()}${loading ? " · loading…" : ""}`}
+      meta={`${total.toLocaleString()} detections${loading ? " · loading…" : ""}`}
       actions={
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex overflow-hidden rounded-md border border-border/70">
@@ -664,8 +664,8 @@ function KpiCard({ label, value }: { label: string; value: number }) {
   return (
     <Card>
       <CardContent className="p-4">
-        <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</div>
-        <div className="mt-1 text-2xl font-semibold tabular-nums">{Number(value).toLocaleString()}</div>
+        <div className="eyebrow">{label}</div>
+        <div className="display-figure mt-1.5 text-[26px] leading-none">{Number(value).toLocaleString()}</div>
       </CardContent>
     </Card>
   );

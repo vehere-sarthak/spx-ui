@@ -239,7 +239,7 @@ export default function CaptureInputPage() {
   return (
     <PageFrame
       title="Capture Input Identification"
-      subtitle={`${total.toLocaleString()} records${loading ? " · loading…" : ""}`}
+      meta={`${total.toLocaleString()} records${loading ? " · loading…" : ""}`}
       actions={
         <div className="flex gap-1.5">
           <Button size="sm" variant="outline" onClick={() => setImportOpen(true)}>

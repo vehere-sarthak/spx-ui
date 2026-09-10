@@ -156,7 +156,6 @@ export default function EdgePage() {
   return (
     <PageFrame
       title="Spider-X Edge"
-      subtitle="Manage Spider-X Edge appliances for high-speed network traffic capture and metadata extraction."
       actions={
         <Button size="sm" onClick={() => setOpen(true)}>
           Register appliance
@@ -334,8 +333,10 @@ export default function EdgePage() {
 function Stat({ label, value, tone }: { label: string; value: string | number; tone?: "ok" }) {
   return (
     <div className="ndr-panel px-3 py-2">
-      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
-      <div className={cn("truncate text-lg font-semibold", tone === "ok" && "text-severity-success")}>{value}</div>
+      <div className="eyebrow">{label}</div>
+      <div className={cn("display-figure mt-1 truncate text-[21px] leading-none", tone === "ok" && "text-severity-success")}>
+        {value}
+      </div>
     </div>
   );
 }

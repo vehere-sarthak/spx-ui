@@ -214,7 +214,7 @@ export default function RolesPage() {
   return (
     <PageFrame
       title="Role Management"
-      subtitle={`MySQL ui_db.roles · ${total} roles`}
+      meta={`${total} roles`}
       actions={
         <Button size="sm" onClick={openCreate}>
           Create role

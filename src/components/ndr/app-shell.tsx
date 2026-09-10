@@ -13,6 +13,7 @@ import {
   Shield,
   ChevronLeft,
   ChevronRight,
+  Search,
 } from "lucide-react";
 import { ROUTES } from "@/components/ndr/command-palette";
 import { Button } from "@/components/ui/button";
@@ -51,9 +52,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!mounted) return;
     const saved = localStorage.getItem("spiderx_sidebar");
     if (saved === "collapsed") setSidebarOpen(false);
-    const session = localStorage.getItem("spiderx_session");
-    if (!session) router.replace("/login");
-  }, [mounted, router]);
+  }, [mounted]);
+
+  /** The palette owns the ⌘K listener on window; replay the chord to open it. */
+  function openPalette() {
+    window.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true }),
+    );
+  }
 
   function toggleSidebar() {
     setSidebarOpen((v) => {
@@ -113,10 +119,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link
                   href={r.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-sm transition",
+                    "relative flex items-center gap-3 rounded-md px-2.5 py-2 text-[13px] transition-colors",
                     active
-                      ? "bg-primary text-white shadow-crimson"
-                      : "text-white/55 hover:bg-white/10 hover:text-white",
+                      ? "bg-white/[0.07] font-medium text-white before:absolute before:inset-y-1 before:left-0 before:w-[2px] before:rounded-full before:bg-primary"
+                      : "text-white/50 hover:bg-white/[0.05] hover:text-white/90",
                     !sidebarOpen && "justify-center px-0",
                   )}
                 >
@@ -172,26 +178,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </button>
 
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold tracking-wide">
-                SpiderX <span className="text-white/35">/</span>{" "}
-                <span className="text-white/70">
+              <div className="truncate">
+                <span className="text-[17px] font-semibold leading-none tracking-tight">SpiderX</span>
+                <span className="mx-2 text-white/25">/</span>
+                <span className="text-sm font-medium text-white/85">
                   {ROUTES.find((r) => pathname.startsWith(r.href))?.label ??
                     "Console"}
                 </span>
               </div>
-              {/* <div className="hidden text-[10px] text-white/40 sm:block">
-                Vehere Network Detection & Response
-              </div> */}
             </div>
 
             <div className="ml-auto flex items-center gap-1.5">
-              <div className="mr-1 hidden rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5 text-[11px] text-white/55 lg:block">
-                Press{" "}
-                <kbd className="mx-1 rounded border border-white/20 px-1">
+              <button
+                type="button"
+                onClick={openPalette}
+                className="mr-1 hidden items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] py-1.5 pl-2.5 pr-2 text-[12px] text-white/45 transition-colors hover:border-white/20 hover:text-white/70 lg:flex"
+              >
+                <Search className="h-3.5 w-3.5" />
+                <span className="w-28 text-left">Search</span>
+                <kbd className="rounded border border-white/15 px-1 font-mono text-[10px] text-white/40">
                   ⌘K
-                </kbd>{" "}
-                to jump
-              </div>
+                </kbd>
+              </button>
 
               <Button
                 variant="ghost"

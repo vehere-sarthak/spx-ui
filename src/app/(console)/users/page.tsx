@@ -169,7 +169,7 @@ export default function UsersPage() {
   return (
     <PageFrame
       title="User Management"
-      subtitle={`MySQL ui_db.users · ${total} users`}
+      meta={`${total} users`}
       actions={
         <Button size="sm" onClick={openCreate}>
           Create user

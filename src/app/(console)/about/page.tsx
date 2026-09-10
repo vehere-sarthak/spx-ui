@@ -46,7 +46,7 @@ export default function AboutPage() {
     status === "Active" ? "text-emerald-400" : status === "Expired" ? "text-primary" : "text-muted-foreground";
 
   return (
-    <PageFrame title="About" subtitle="Configuration / About">
+    <PageFrame title="About">
       <div className="h-full min-h-0 overflow-auto scroll-thin">
         {error && (
           <div className="mb-3 rounded-md border border-primary/40 bg-primary/10 px-3 py-2 text-sm text-primary">

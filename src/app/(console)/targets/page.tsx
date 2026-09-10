@@ -535,7 +535,7 @@ export default function TargetsPage() {
   return (
     <PageFrame
       title="Target Management"
-      subtitle={
+      meta={
         loading
           ? "Loading…"
           : `${total.toLocaleString()} · ${counts.active ?? "—"} active · ${counts.inactive ?? "—"} inactive`

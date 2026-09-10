@@ -1,0 +1,323 @@
+/*
+ * Login screen — the vehere-ui composition: one full-bleed background, brand
+ * mark top-left, credentials on the left, product identity on the right.
+ *
+ * Deliberately theme-independent. The console honours the light/dark toggle,
+ * but this screen is always the dark brand treatment, so it reads from literal
+ * values rather than the --background/--foreground tokens.
+ */
+
+.login-root {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background-color: #05040a;
+  background-image: url("/assets/login/login-bg.svg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  color: #fff;
+}
+
+/* ---- Brand mark ---- */
+
+.login-brand {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 2rem;
+}
+
+.login-brand img {
+  width: 130px;
+  height: auto;
+}
+
+.login-brand-divider {
+  width: 1px;
+  height: 26px;
+  background: #585858;
+}
+
+.login-brand-product {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+/* ---- Two-column frame ---- */
+
+.login-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 38% 62%;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.login-form-col {
+  display: flex;
+  justify-content: center;
+  padding: 8rem 2rem 4rem;
+}
+
+.login-form-wrap {
+  width: 100%;
+  max-width: 375px;
+}
+
+/* ---- Headings ---- */
+
+.login-heading {
+  font-size: clamp(1.75rem, 2.1vw, 2.3rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.login-subheading {
+  margin-top: 0.6rem;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---- Fields ---- */
+
+.login-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.login-input {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 1.35rem;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.login-input::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.login-input:focus {
+  border-color: #3595e3;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.login-input-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8rem;
+}
+
+/* Password field: the input keeps its own bottom margin, so the wrapper is
+   only a positioning context for the reveal toggle. */
+.login-input-group {
+  position: relative;
+}
+
+.login-input-group .login-input {
+  padding-right: 2.75rem;
+}
+
+.login-eye {
+  position: absolute;
+  top: 22px;
+  right: 0.85rem;
+  transform: translateY(-50%);
+  display: flex;
+  color: rgba(255, 255, 255, 0.55);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.login-eye:hover {
+  color: #fff;
+}
+
+/* ---- Buttons ---- */
+
+.login-submit {
+  width: 100%;
+  height: 44px;
+  border: 0;
+  border-radius: 6px;
+  background: #3595e3;
+  color: #fff;
+  font-size: 0.98rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.login-submit:hover:not(:disabled) {
+  background: #2a7fc4;
+}
+
+.login-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.login-secondary {
+  width: 100%;
+  height: 42px;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.login-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.login-link {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+  padding: 0.35rem 0;
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.login-link:hover {
+  color: #fff;
+}
+
+/* ---- Messages ---- */
+
+.login-alert {
+  margin-bottom: 1.25rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.login-alert-error {
+  border: 1px solid rgba(233, 61, 79, 0.45);
+  background: rgba(233, 61, 79, 0.12);
+  color: #ff9aa4;
+}
+
+.login-alert-notice {
+  border: 1px solid rgba(61, 155, 233, 0.45);
+  background: rgba(61, 155, 233, 0.12);
+  color: #a9d5f7;
+}
+
+/* ---- TOTP extras ---- */
+
+.login-qr {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.login-otpauth {
+  margin: -0.9rem 0 1.25rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.45);
+  word-break: break-all;
+}
+
+.login-recovery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  list-style: none;
+}
+
+/* ---- Right-hand product identity ---- */
+
+.login-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 3rem;
+  text-align: center;
+}
+
+.login-hero-title {
+  font-size: clamp(2rem, 3.3vw, 3.6rem);
+  font-weight: 400;
+  line-height: 1.1;
+  background: linear-gradient(115deg, #fff -14%, rgba(255, 255, 255, 0.35) 150%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.login-hero-sub {
+  margin-top: 0.9rem;
+  font-size: clamp(0.85rem, 1vw, 1.05rem);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.login-hero-globe {
+  width: min(100%, 620px);
+  height: auto;
+  margin-top: 1.5rem;
+}
+
+/* ---- Narrow screens: identity panel drops, form takes the full width ---- */
+
+@media (max-width: 1024px) {
+  .login-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .login-form-col {
+    padding: 9rem 1.5rem 4rem;
+  }
+
+  .login-hero {
+    display: none;
+  }
+}

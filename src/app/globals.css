@@ -23,8 +23,11 @@
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 86%;
     --input: 220 13% 86%;
-    --ring: 354 82% 50%;
-    --radius: 0.65rem;
+    /* Focus ring is deliberately NOT the crimson accent: a red outline on a
+       field you just clicked reads as a validation error. This is vehere-ui's
+       primary (#3595E3), which its theme also chose over red. */
+    --ring: 207 76% 55%;
+    --radius: 0.375rem;
     --rail: 0 0% 0%;
     --rail-fg: 0 0% 92%;
     --surface: 0 0% 100%;
@@ -50,7 +53,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 240 5% 16%;
     --input: 240 5% 14%;
-    --ring: 354 86% 54%;
+    --ring: 207 76% 60%;
     --rail: 0 0% 0%;
     --rail-fg: 0 0% 90%;
     --surface: 240 6% 7%;
@@ -77,20 +80,43 @@
     height: 100%;
     overflow: hidden;
     background-image: none;
+    letter-spacing: -0.006em;
+  }
+
+  /* DM Mono has no true bold; keep numerals aligned in every data column. */
+  .font-mono,
+  code,
+  kbd,
+  pre {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
   }
 }
 
 @layer components {
   .ndr-panel {
-    @apply rounded-lg border border-border/80 bg-card/80 shadow-panel backdrop-blur-xl;
+    @apply rounded-md border border-border bg-card;
   }
 
   .ndr-inset {
-    @apply rounded-md border border-border/60 bg-muted/40;
+    @apply rounded border border-border/60 bg-muted/40;
   }
 
   .sev-dot {
     @apply inline-block h-2 w-2 rounded-full;
+  }
+
+  /* Headline figures: DM Sans like everything else, with aligned numerals.
+     The product is sans-only, matching vehere-ui's 'DM Sans, sans-serif'. */
+  .display-figure {
+    @apply font-sans font-medium tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* Small structural labels: sans, uppercase, spaced — never serif. */
+  .eyebrow {
+    @apply text-[10px] font-medium uppercase text-muted-foreground;
+    letter-spacing: 0.09em;
   }
 }
 

@@ -153,7 +153,7 @@ export default function AuditPage() {
   return (
     <PageFrame
       title="Audit Trail"
-      subtitle={`Live audittrail-* · ${total.toLocaleString()} events${loading ? " · loading…" : ""}`}
+      meta={`${total.toLocaleString()} events${loading ? " · loading…" : ""}`}
       actions={
         <div className="flex flex-wrap items-center gap-2">
           <Button size="sm" variant="outline" disabled={exporting} onClick={exportCsv}>

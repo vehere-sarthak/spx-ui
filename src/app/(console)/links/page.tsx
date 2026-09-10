@@ -253,9 +253,9 @@ export default function LinksPage() {
   return (
     <PageFrame
       title="Link Fabric"
-      subtitle={
+      meta={
         loading
-          ? "Loading link-stats-*"
+          ? "Loading…"
           : `${kpi?.links ?? 0} links · ${kpi?.probes ?? 0} probes · ${formatBytes(kpi?.bytes || 0)}`
       }
       actions={
@@ -651,10 +651,10 @@ export default function LinksPage() {
 function Kpi({ label, value, tone }: { label: string; value: string | number; tone?: "ok" | "warn" }) {
   return (
     <div className="ndr-panel px-3 py-2">
-      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className="eyebrow">{label}</div>
       <div
         className={cn(
-          "text-lg font-semibold",
+          "display-figure mt-1 text-[21px] leading-none",
           tone === "ok" && "text-severity-success",
           tone === "warn" && "text-severity-high"
         )}

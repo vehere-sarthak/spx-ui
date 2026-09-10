@@ -124,11 +124,7 @@ export default function HealthPage() {
   return (
     <PageFrame
       title="Health Dashboard"
-      subtitle={
-        loading
-          ? "Loading metricbeat + ES"
-          : `Host metrics from logvehere-monitor-* · ES ${data?.es?.cluster || "—"}`
-      }
+      meta={loading ? "Loading…" : `ES ${data?.es?.cluster || "—"}`}
       actions={
         <>
           <Button size="sm" variant="outline" onClick={exportPdf}>
@@ -349,10 +345,10 @@ function Stat({
   return (
     <div className="ndr-panel px-3 py-2">
       <div className="mb-1 flex items-center gap-2">
-        <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</span>
+        <span className="eyebrow">{label}</span>
         {badge && <Badge variant={badge}>{badge === "success" ? "ok" : "down"}</Badge>}
       </div>
-      <div className="truncate text-lg font-semibold">{value}</div>
+      <div className="display-figure truncate text-[21px] leading-none">{value}</div>
       {hint && <div className="truncate text-[10px] text-muted-foreground">{hint}</div>}
     </div>
   );

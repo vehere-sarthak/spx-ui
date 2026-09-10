@@ -35,11 +35,28 @@ export async function serviceBase(): Promise<string> {
 export async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
   const base = await serviceBase();
   const url = `${base}${path.startsWith("/") ? path : `/${path}`}`;
-  return fetch(url, {
+  const res = await fetch(url, {
     ...init,
     credentials: "include",
     cache: init?.cache ?? "no-store",
   });
+
+  // spx-service rejects an expired or missing session with 401. The route gate
+  // in middleware.ts only runs on navigations, so this is what catches a session
+  // that lapses while the user is sitting on a page.
+  if (res.status === 401 && typeof window !== "undefined") {
+    const onLoginPage = window.location.pathname.startsWith("/login");
+    // The login form's own 401 (bad password) must surface as an error, not a
+    // navigation, or the user never sees why sign-in failed.
+    if (!onLoginPage && !path.startsWith("/auth/")) {
+      localStorage.removeItem("spiderx_session");
+      localStorage.removeItem("spiderx_user");
+      const back = `${window.location.pathname}${window.location.search}`;
+      window.location.replace(`/login?redirectedUrl=${encodeURIComponent(back)}`);
+    }
+  }
+
+  return res;
 }
 
 /** For links the browser navigates to or downloads (CSV, PCAP). */

@@ -4,16 +4,17 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+/* Typeface system — DM Sans, and only DM Sans. Matching vehere-ui's theme
+   ('DM Sans, sans-serif'); no serif and no monospaced face is loaded. */
+const dmSans = localFont({
+  src: [
+    { path: "./fonts/DMSans-Variable.woff2", weight: "100 1000", style: "normal" },
+    { path: "./fonts/DMSans-VariableItalic.woff2", weight: "100 1000", style: "italic" },
+  ],
+  variable: "--font-sans",
+  display: "swap",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+
 
 export const metadata: Metadata = {
   title: "SpiderX — Vehere",
@@ -23,7 +24,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+      <body
+        className={`${dmSans.variable} font-sans antialiased`}
+      >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <TooltipProvider delayDuration={120}>{children}</TooltipProvider>
         </ThemeProvider>
