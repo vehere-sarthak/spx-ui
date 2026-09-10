@@ -21,6 +21,8 @@ export type SpiderXConfig = {
   auth: {
     APP_TOTP_ISSUER?: string;
     session_jwt_secret?: string;
+    /** Signs half-authenticated challenge cookies only, never a full session. */
+    auth_jwt_secret?: string;
     session_cookie_expiresIn_sec?: number;
     session_cookie_key_name?: string;
     platform_mfa?: unknown;
@@ -117,6 +119,7 @@ function applyEnvOverrides(cfg: SpiderXConfig): SpiderXConfig {
   if (process.env.MYSQL_PASSWORD) c.mySQL_config.password = process.env.MYSQL_PASSWORD;
   if (process.env.MYSQL_DATABASE) c.mySQL_config.database = process.env.MYSQL_DATABASE;
   if (process.env.SPIDERX_SESSION_SECRET) c.auth.session_jwt_secret = process.env.SPIDERX_SESSION_SECRET;
+  if (process.env.SPIDERX_AUTH_SECRET) c.auth.auth_jwt_secret = process.env.SPIDERX_AUTH_SECRET;
   if (process.env.APP_TOTP_ISSUER) c.auth.APP_TOTP_ISSUER = process.env.APP_TOTP_ISSUER;
   if (process.env.PORT) c.server.port = Number(process.env.PORT);
   if (process.env.SPX_SERVICE_URL) c.service!.url = process.env.SPX_SERVICE_URL;
@@ -160,6 +163,20 @@ function bundledPath() {
   return candidates[0];
 }
 
+/**
+ * Development-only overlay, mirroring vehere-ui's uiconfig.dev.yml. Git-ignored
+ * and never packaged; supplies real credentials on a developer box while the
+ * bundled spiderx.yml keeps placeholders.
+ */
+function devPath(): string | null {
+  const candidates = [
+    path.join(process.cwd(), "config", "spiderx.dev.yml"),
+    path.join(process.cwd(), "spiderx.dev.yml"),
+  ];
+  for (const p of candidates) if (fs.existsSync(p)) return p;
+  return null;
+}
+
 function externalPath(cfg: Partial<SpiderXConfig>) {
   const folder = cfg.filePath?.externalConfigFolderPath || "/etc/spiderx";
   const name = cfg.filePath?.externalConfigFileName || "spiderx.yml";
@@ -171,6 +188,13 @@ let _cache: SpiderXConfig | null = null;
 export function getAppConfig(force = false): SpiderXConfig {
   if (_cache && !force) return _cache;
   let cfg = (readYml(bundledPath()) || {}) as SpiderXConfig;
+  // Dev overlay sits between the bundled defaults and the appliance overlay, so
+  // an appliance file still wins on a real deployment.
+  if (process.env.NEXT_PUBLIC_ENV === "development") {
+    const dp = devPath();
+    const devCfg = dp ? readYml(dp) : null;
+    if (devCfg) cfg = deepMerge(cfg, devCfg as SpiderXConfig);
+  }
   const overlay = readYml(externalPath(cfg));
   if (overlay) cfg = deepMerge(cfg, overlay);
   cfg = applySetupInfo(cfg);
@@ -215,6 +239,15 @@ export function getSessionSecret(): string {
     process.env.SPIDERX_SESSION_SECRET ||
     getAppConfig().auth?.session_jwt_secret ||
     "change-me-in-production"
+  );
+}
+
+/** Half-auth challenge cookies are signed with their own key, as uiServices does. */
+export function getAuthSecret(): string {
+  return (
+    process.env.SPIDERX_AUTH_SECRET ||
+    getAppConfig().auth?.auth_jwt_secret ||
+    getSessionSecret()
   );
 }
 

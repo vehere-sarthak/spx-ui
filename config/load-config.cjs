@@ -85,6 +85,7 @@ function applyEnvOverrides(cfg) {
   if (process.env.MYSQL_DATABASE) c.mySQL_config.database = process.env.MYSQL_DATABASE;
 
   if (process.env.SPIDERX_SESSION_SECRET) c.auth.session_jwt_secret = process.env.SPIDERX_SESSION_SECRET;
+  if (process.env.SPIDERX_AUTH_SECRET) c.auth.auth_jwt_secret = process.env.SPIDERX_AUTH_SECRET;
   if (process.env.APP_TOTP_ISSUER) c.auth.APP_TOTP_ISSUER = process.env.APP_TOTP_ISSUER;
   if (process.env.PORT) c.server.port = Number(process.env.PORT);
   if (process.env.UISERVICE_URL) c.uiservice.url = process.env.UISERVICE_URL;
@@ -139,6 +140,23 @@ function resolveBundledPath() {
   return candidates[0];
 }
 
+/**
+ * Development-only overlay, mirroring vehere-ui's uiconfig.dev.yml. Git-ignored,
+ * never packaged: it carries the real credentials for a developer box while the
+ * bundled spiderx.yml keeps placeholders.
+ */
+function resolveDevPath() {
+  const candidates = [
+    path.join(__dirname, "spiderx.dev.yml"),
+    path.join(process.cwd(), "config", "spiderx.dev.yml"),
+    path.join(process.cwd(), "spiderx.dev.yml"),
+  ];
+  for (const p of candidates) {
+    if (fs.existsSync(p)) return p;
+  }
+  return null;
+}
+
 function resolveExternalPath(cfg) {
   const folder = cfg?.filePath?.externalConfigFolderPath || "/etc/spiderx";
   const name = cfg?.filePath?.externalConfigFileName || "spiderx.yml";
@@ -151,6 +169,13 @@ function loadAppConfig(force = false) {
   if (_cache && !force) return _cache;
   const bundledPath = resolveBundledPath();
   let cfg = readYml(bundledPath) || {};
+  // Dev overlay sits between the bundled defaults and the appliance overlay, so
+  // an appliance file still wins on a real deployment.
+  if (process.env.NEXT_PUBLIC_ENV === "development") {
+    const devPath = resolveDevPath();
+    const devCfg = devPath ? readYml(devPath) : null;
+    if (devCfg) cfg = deepMerge(cfg, devCfg);
+  }
   const external = resolveExternalPath(cfg);
   const overlay = readYml(external);
   if (overlay) cfg = deepMerge(cfg, overlay);

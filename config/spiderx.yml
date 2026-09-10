@@ -2,8 +2,9 @@
 #
 # Load order (last wins):
 #   1. this bundled file
-#   2. /etc/spiderx/spiderx.yml        (appliance overlay, written by the installer)
-#   3. environment variables            (ES_*, MYSQL_*, SPIDERX_*, PORT)
+#   2. config/spiderx.dev.yml          (dev only, git-ignored, NEXT_PUBLIC_ENV=development)
+#   3. /etc/spiderx/spiderx.yml        (appliance overlay, written by the installer)
+#   4. environment variables            (SPIDERX_*, PORT — not credentials)
 #
 # Port layout mirrors vehere-ui / uiServices exactly:
 #   spx-ui       :4000   (same as vehere-ui)
@@ -44,7 +45,10 @@ service: {
 
 auth: {
   APP_TOTP_ISSUER: 'SpiderX',
+  # Placeholders. Real values come from config/spiderx.dev.yml (dev, git-ignored)
+  # or /etc/spiderx/spiderx.yml (appliance). Never commit a real secret here.
   session_jwt_secret: 'change-me-in-production',
+  auth_jwt_secret: 'change-me-in-production-too',
   session_cookie_expiresIn_sec: 43200,
   session_cookie_key_name: 'spiderx_sid',
 }

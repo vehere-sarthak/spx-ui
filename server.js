@@ -9,8 +9,14 @@ const { parse } = require("url");
 const next = require("next");
 const { loadAppConfig, sslOptions } = require("./config/load-config.cjs");
 
-const cfg = loadAppConfig();
 const dev = process.env.NODE_ENV !== "production";
+
+// Next loads .env/.env.local itself, but only once app.prepare() runs — and the
+// config chain below is read before that. Without this, NEXT_PUBLIC_ENV is unset
+// at boot and the development overlay is skipped silently.
+require("@next/env").loadEnvConfig(process.cwd(), dev);
+
+const cfg = loadAppConfig();
 const port = parseInt(process.env.PORT || String(cfg.server?.port || 4000), 10);
 const hostname = process.env.HOSTNAME || cfg.server?.bind || "0.0.0.0";
 

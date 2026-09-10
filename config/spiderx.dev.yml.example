@@ -1,0 +1,24 @@
+# Copy to config/spiderx.dev.yml and fill in your lab values.
+# That file is git-ignored — it is the only place real dev credentials belong.
+# Loaded only when NEXT_PUBLIC_ENV=development.
+
+elasticsearch_config: {
+  hosts: 'https://<es-host>:9200/',
+  username: 'admin',
+  password: '<es-password>',
+  rejectUnauthorized: false,
+}
+
+mySQL_config: {
+  host: '<mysql-host>',
+  user: 'vehere',
+  password: '<mysql-password>',
+  database: 'ui_db',
+  port: 3306,
+}
+
+# Generate with: openssl rand -base64 33 | tr -d '\n/+=' | head -c 40
+auth: {
+  session_jwt_secret: '<40-char-random>',
+  auth_jwt_secret: '<different-40-char-random>',
+}

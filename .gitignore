@@ -43,3 +43,6 @@ buildInfo.txt
 
 # runtime caches
 /data/es-cache/
+
+# local dev config overlay (real credentials — never commit)
+config/spiderx.dev.yml
